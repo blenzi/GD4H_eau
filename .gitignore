@@ -130,3 +130,5 @@ dmypy.json
 
 # MacOSX
 .DS_Store
+
+.geoapi_key
