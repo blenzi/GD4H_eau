@@ -1,0 +1,9 @@
+Région,Année,Champ AtlaSante,Champ data.gouv,Fichier
+Auvergne-Rhône-Alpes,2020,c_code_udi,cdreseau,data/AtlaSante_Auvergne_Rhone_Alpes_2020/ars_r84_udi_2020_infofacture_j.json
+Bourgogne-Franche-Comté,2019,code,cdreseau,data/AtlaSante_Bourgogne_Franche_Comte_2019/ars_r27_udi_2019_z.json
+Bretagne,2017,c_ins_code,cdreseau,data/AtlaSante_Bretagne_2017/ars_r53_bretagne_udi_2016_jointure.json
+Centre-Val de Loire,2020,code,cdreseau,data/AtlaSante_Centre_Val_de_Loire_2020/ars_r24_udi_2020_z.json
+Corse,2017,c_cn_udi,cdreseau,data/AtlaSante_Corse_2017/ars_r94_udi_j.json
+Nouvelle-Aquitaine,2018,c_code_udi,cdreseau,data/AtlaSante_Nouvelle-Aquitaine_2018/ars_r75_udi_2018_j.json
+Provence-Alpes-Côte d'Azur,2020,code_infof,cdreseau,data/AtlaSante_PACA_2019/ars_r93_udi_infofacture_2019.json
+Pays de la Loire,2018,codenatudi,cdreseau,data/AtlaSante_Pays_de_la_Loire_2018/ars_r52_udi_aep_z.json
