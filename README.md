@@ -6,7 +6,7 @@ Le Green Data for Health (GD4H) est un projet inscrit dans le 4ème Plan Nationa
 
 ## Géo-localisation des unités de distribution
 
-Un des cas d'usage identifiés est l'étude des impacts de la qualité de l'eau potable. Ces données sont collectés dans la base SISE-Eaux des Agences Régionales de Santé (ARS) et mis à disposition sur le site [data.gouv.fr](https://www.data.gouv.fr/fr/datasets/resultats-du-controle-sanitaire-de-leau-distribuee-commune-par-commune/).
+Un des cas d'usage identifiés est l'étude des impacts de la qualité de l'eau potable. Ces données sont collectées dans la base SISE-Eaux des Agences Régionales de Santé (ARS) et mises à disposition sur le site [data.gouv.fr](https://www.data.gouv.fr/fr/datasets/resultats-du-controle-sanitaire-de-leau-distribuee-commune-par-commune/).
 
 Les ARS produisent également des cartes des unités de distribution et le mettent à disposition sur le site [AtlaSante](https://carto.atlasante.fr/1/ars_metropole_udi_infofactures.map).
 
@@ -27,4 +27,4 @@ pip install numpy pandas matplotlib geopandas
 - `data/info_AtlaSante.csv`: contient la liste des régions, fichers avec les cartes d'AtlaSante, année correspondante et les champs utilisés dans la jointure
 - `checks_AtlaSante.ipynb`: vérification des cartes d'AtlaSante. Met en évidence les entrées dupliquées et/ou sans géométrie associée.
 - `jointure_UDI_AtlaSante.ipynb`: réalise la jointure entre les unités de distributions (UDIs) listées dans data.gouv et AtlaSanté. Met en évidence les entrées communes et exclusives à chacune des bases.
-- `adresse.ipynb`: permet d'idenfier l’unité de distribution et les résultats de prélèvement pour une adresse en France (en Bretagne pour l'instant).
+- `adresse.ipynb`: permet d'identifier l’unité de distribution et les résultats de prélèvement pour une adresse en France (en Bretagne pour l'instant), en s'appuyant sur l'API [hub'eau](https://hubeau.eaufrance.fr/page/api-qualite-eau-potable#/).
