@@ -14,13 +14,16 @@ Ce module a pour objectif de permettre une jointure entre les deux lots de donn�
 
 ## Installation
 
+Pour télécharger et installer le module et les données:
+
 ```
-git clone https://github.com/blenzi/GD4H_eau.git
-pip install numpy pandas matplotlib geopandas
+pip install -e git+https://github.com/blenzi/GD4H_eau.git#egg=GD4H_eau
 ```
 
-- Télécharger les données de la base SISE-Eaux disponibles sur le site [data.gouv.fr](https://www.data.gouv.fr/fr/datasets/resultats-du-controle-sanitaire-de-leau-distribuee-commune-par-commune/). Ouvrir le contenu des fichiers zip dans `data/DIS_2016`, etc.
-- Télécharger les cartes d'[AtlaSante](https://carto.atlasante.fr/1/ars_metropole_udi_infofactures.map) en format JSON, projection WGS84 - GPS (EPSG 4326) [EPSG:4326] sur `data/AtlaSante_<region>`. La liste de fichiers utilisés se trouve sur `data/info_AtlaSante.csv`.
+Données téléchargées:
+
+- Données de la base SISE-Eaux disponibles sur le site [data.gouv.fr](https://www.data.gouv.fr/fr/datasets/resultats-du-controle-sanitaire-de-leau-distribuee-commune-par-commune/). Le contenu des fichiers zip est ouvert dans `data/DIS_2016`, etc.
+- Cartes d'[AtlaSante](https://carto.atlasante.fr/1/ars_metropole_udi_infofactures.map) en format JSON, projection WGS84 - GPS (EPSG 4326) [EPSG:4326] sur `data/AtlaSante_<region>`. La liste de fichiers utilisés se trouve sur `data/info_AtlaSante.csv`.
 
 ## Fichiers
 
