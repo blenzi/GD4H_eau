@@ -21,7 +21,7 @@ class PostInstall(install):
         import dload
         import pandas as pd
 
-        os.system('mc Ap -r s3/blenzi/GD4H_eau/data .')
+        os.system('mc cp -r s3/blenzi/GD4H_eau/data .')
 
         url_DIS = {
             2021: "https://www.data.gouv.fr/fr/datasets/r/d2b432cc-3761-44d3-8e66-48bc15300bb5",
