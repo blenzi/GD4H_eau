@@ -23,7 +23,9 @@ class PostInstall(install):
         import dload
         import pandas as pd
         
-        
+
+        os.system('mc Ap -r s3/blenzi/GD4H_eau/data .')
+
         url_DIS = {
             2021: "https://www.data.gouv.fr/fr/datasets/r/d2b432cc-3761-44d3-8e66-48bc15300bb5",
             2020: "https://www.data.gouv.fr/fr/datasets/r/a6cb4fea-ef8c-47a5-acb3-14e49ccad801",
@@ -45,12 +47,12 @@ class PostInstall(install):
             # data_AtlaSante['Fichier'].apply(lambda x: Path(x).parent.mkdir(exist_ok=True))
             url_AtlaSante = "https://osmose.numerique.gouv.fr/front/publicLink/publicDownload.jsp?id=a8e0ff0b-2fc0-40de-868d-a1458151ab825e139cbc-81ec-492f-8716-c0d415c8f7db"
             dload.save_unzip(url_AtlaSante, extract_path='data/', delete_after=True)
-         
+
        
 
 setup(
     name="GD4H_eau",
-    version='0.0.2',
+    version='0.0.3',
     author="Bruno Lenzi",
     author_email="bruno.lenzi@developpement-durable.gouv.fr",
     description="GD4H: cas d’usage qualité de l'eau du robinet",
@@ -63,7 +65,7 @@ setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
+    python_requires='>=3.8',
     install_requires=requirements,
     include_package_data=True,
     cmdclass={'install': PostInstall}
