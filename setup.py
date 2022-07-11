@@ -1,9 +1,6 @@
 from setuptools import setup, find_packages
 from setuptools.command.install import install
 import os
-import requests
-import urllib.request
-import zipfile
 from pathlib import Path
 
 
@@ -16,13 +13,13 @@ with open('requirements.txt') as f:
 
 class PostInstall(install):
     """
-    Post-installation: download and unpack package data if needed - DIS files from data.gouv and json files from Osmose
+    Post-installation: download and unpack package data if needed:
+    files from s3 if available, DIS files from data.gouv and json files from Osmose
     """
     def finalize_options(self):
         install.finalize_options(self)
         import dload
         import pandas as pd
-        
 
         os.system('mc Ap -r s3/blenzi/GD4H_eau/data .')
 
@@ -34,21 +31,19 @@ class PostInstall(install):
             2017: "https://www.data.gouv.fr/fr/datasets/r/5785427b-3167-49fa-a581-aef835f0fb04",
             2016: "https://www.data.gouv.fr/fr/datasets/r/483c84dd-7912-483b-b96f-4fa5e1d8651f"
         }
-        
+
         for year, url in url_DIS.items():
             output_dir = Path(f'data/DIS_{year}')
             if not output_dir.exists():
                 output_dir.mkdir(parents=True)
                 dload.save_unzip(url, extract_path=str(output_dir), delete_after=True)
 
-        
         data_AtlaSante = pd.read_csv('data/info_AtlaSante.csv')
         if not data_AtlaSante['Fichier'].apply(lambda x: Path(x).exists()).all():
             # data_AtlaSante['Fichier'].apply(lambda x: Path(x).parent.mkdir(exist_ok=True))
-            url_AtlaSante = "https://osmose.numerique.gouv.fr/front/publicLink/publicDownload.jsp?id=a8e0ff0b-2fc0-40de-868d-a1458151ab825e139cbc-81ec-492f-8716-c0d415c8f7db"
+            url_AtlaSante = "https://osmose.numerique.gouv.fr/front/publicLink/publicDownload.jsp?id=a8e0ff0b-2fc0-40de-868d-a1458151ab825e139cbc-81ec-492f-8716-c0d415c8f7db"  # noqa: E501
             dload.save_unzip(url_AtlaSante, extract_path='data/', delete_after=True)
 
-       
 
 setup(
     name="GD4H_eau",

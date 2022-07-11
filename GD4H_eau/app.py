@@ -7,19 +7,21 @@ import requests
 from shapely.geometry import Point
 
 
-
 @st.cache
 def read_pars():
     with open('data/par.json') as f:
         d = json.load(f)
     return pd.DataFrame(d['REFERENTIELS']['Referentiel']['Parametre'])
 
+
 @st.cache
 def read_info():
     return pd.read_csv('data/info_AtlaSante.csv')
 
+
 def get_info_region(region):
     return read_info().query(f'Région == "{region}"')
+
 
 @st.cache
 def read_carte_region(region):
@@ -58,7 +60,7 @@ if result.status_code in (200, 206):
 code_parametre = read_pars().set_index('NomParametre').loc[parametre, 'CdParametre']
 date_min = f'{annee}-01-01 00:00:00'
 date_max = f'{annee+1}-01-01 00:00:00'
-result = requests.get(f'https://hubeau.eaufrance.fr/api/vbeta/qualite_eau_potable/resultats_dis?code_commune={code_commune}&code_parametre={code_parametre}&date_min_prelevement={date_min}&date_max_prelevement={date_max}&fields=libelle_parametre,code_lieu_analyse,resultat_numerique,libelle_unite,date_prelevement')
+result = requests.get(f'https://hubeau.eaufrance.fr/api/vbeta/qualite_eau_potable/resultats_dis?code_commune={code_commune}&code_parametre={code_parametre}&date_min_prelevement={date_min}&date_max_prelevement={date_max}&fields=libelle_parametre,code_lieu_analyse,resultat_numerique,libelle_unite,date_prelevement')  # noqa: E501
 if result.status_code in (200, 206):
     st.write('Prelevements:')
     data = pd.DataFrame(result.json()['data'])
@@ -66,13 +68,10 @@ if result.status_code in (200, 206):
     st.caption(f'{len(data)} prelevements en {annee}')
 
 
-# 'date_min_prelevement'
-
-
-
 address = st.sidebar.text_input('Adresse')
 proxies = {}
-geoapi_key = os.getenv('GEOAPI_KEY') or open('.geoapi_key').read()  #[:-1]
+geoapi_key = os.getenv('GEOAPI_KEY') or open('.geoapi_key').read()
+
 
 def search_address(address):
     result = requests.get(f'https://api.geoapify.com/v1/geocode/search?text="{address}"&apiKey={geoapi_key}', proxies=proxies)
@@ -83,23 +82,27 @@ def search_address(address):
         except (ValueError, IndexError):
             raise  # TODO: exception, adress not found
 
+
 def get_code_reseau(df, point, field='c_ins_code'):
     return df.loc[df.contains(point), field].values[0]
+
 
 def get_info_reseau(code_reseau, annee=2021):
     result = requests.get(f'https://hubeau.eaufrance.fr/api/vbeta/qualite_eau_potable/communes_udi?code_reseau={code_reseau}&annee={annee}')
     if result.status_code == 200:
         return result.json()
 
+
 def get_dernier_prelevement(code_reseau, annee=2021):
     result = requests.get(f'https://hubeau.eaufrance.fr/api/vbeta/qualite_eau_potable/resultats_dis?code_reseau={code_reseau}&annee={annee}&code_parametre=1340&size=1&fields=libelle_parametre,code_lieu_analyse,resultat_numerique,libelle_unite,date_prelevement&sort=desc')
     if result.status_code in (200, 206):
         return result.json()['data'][0]
 
+
 if address:
     try:
         add = search_address(address)
-    except Exception(e):
+    except Exception as e:
         st.write(f'Adresse non trouvée: {address}')
         st.write(e)
     else:
@@ -121,7 +124,7 @@ if address:
         st.write(f"Date du dernier prélèvement: {pd.Timestamp(data['date_prelevement'])}")
         st.write(f"Concentration en {data['libelle_parametre']}: {data['resultat_numerique']} {data['libelle_unite']}")
 
-    #ax = df.plot('c_ins_code', cmap="Blues", figsize=(12,8))
+    # ax = df.plot('c_ins_code', cmap="Blues", figsize=(12,8))
     # ax = df.plot(color='lightblue', figsize=(12,8), missing_kwds={'color': 'lightgrey'}, edgecolor='black')
     # ax.set_xlabel('Latitude')
     # ax.set_ylabel('Longitude')
