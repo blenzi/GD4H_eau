@@ -42,19 +42,20 @@ if code_region >= 10:
 else:
     df_communes = pd.read_json(f'https://geo.api.gouv.fr/communes?codeDepartement=97{code_region}')
 if len(df_communes):
-    communes = st.sidebar.multiselect('Commune', df_communes['nom'].sort_values().to_list())
+    communes = st.sidebar.multiselect('Communes', df_communes['nom'].sort_values().to_list())
+
+code_communes = df_communes.loc[df_communes['nom'].isin(communes), 'code'].to_list()
+code_communes = ",".join(f'{i:05}' for i in code_communes)  # need to prefix zeros
+
+if communes:
+    result = requests.get(f'https://hubeau.eaufrance.fr/api/vbeta/qualite_eau_potable/communes_udi?code_commune={code_communes}&annee={annee}')
+    st.write('Unités de distributions (UDIs):')
+    if result.status_code in (200, 206):
+        st.write(pd.DataFrame(result.json()['data']))
 
 parametres = st.sidebar.multiselect('Paramètres', read_pars()['NomParametre'].to_list())
 
-code_communes = df_communes.loc[df_communes['nom'].isin(communes) & (df_communes['codeRegion'] == code_region), 'code'].to_list()
-code_communes = ",".join(map(str, code_communes))
-result = requests.get(f'https://hubeau.eaufrance.fr/api/vbeta/qualite_eau_potable/communes_udi?code_commune={code_communes}&annee={annee}')
-st.write('Unités de distributions (UDIs):')
-if result.status_code in (200, 206):
-    st.write(pd.DataFrame(result.json()['data']))
-
-
-if parametres:
+if communes and parametres:
     code_parametres = ",".join(read_pars().loc[read_pars()['NomParametre'].isin(parametres), 'CdParametre'].astype(str).to_list())
     date_min = f'{annee}-01-01 00:00:00'
     date_max = f'{annee+1}-01-01 00:00:00'
@@ -72,4 +73,4 @@ if parametres:
                 file_name='data.csv',
                 mime='text/csv',
             )
-        st.caption(f'{len(data)} prelevements en {annee}')
+        st.caption(f'{len(data)} mesures en {annee}')
