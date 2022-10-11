@@ -132,3 +132,5 @@ dmypy.json
 .DS_Store
 
 .geoapi_key
+data/
+publicDownload.jsp
