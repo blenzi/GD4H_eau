@@ -9,10 +9,9 @@ COPY ./requirements.txt .
 COPY ./README.md .
 COPY ./setup.py .
 COPY ./GD4H_eau GD4H_eau
-COPY ./data data
 
 RUN pip install --upgrade pip setuptools wheel \
-    && pip install -e . \
+    && pip install -r requirements.txt \
     && pip cache purge \
     && rm -rf /root/.cache/pip
 

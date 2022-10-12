@@ -3,6 +3,7 @@ import pandas as pd
 import geopandas as gpd
 import json
 import os
+import s3fs
 import requests
 from shapely.geometry import Point
 import folium
@@ -12,16 +13,36 @@ from streamlit_folium import folium_static
 proxies = {}
 geoapi_key = os.getenv('GEOAPI_KEY') or open('.geoapi_key').read()[:-1]
 
+
+def open_file(filename, mode='r'):
+    """
+    Return a file object, open with open(data/<filename>, <mode>) or fs.open(projet-connaissance-enr/filename, <mode>)
+    for s3, depending if environment variable $AWS_S3_ENDPOINT is set
+    Args:
+        filename (str): file to open
+        mode (str): open mode
+    Returns:
+        File object
+    """
+    if 'AWS_S3_ENDPOINT' in os.environ:
+        # Create filesystem object
+        S3_ENDPOINT_URL = "https://" + os.environ["AWS_S3_ENDPOINT"]
+        fs = s3fs.S3FileSystem(client_kwargs={'endpoint_url': S3_ENDPOINT_URL})
+        return fs.open(f'blenzi/GD4H_eau/{filename}', mode=mode)
+    else:
+        return open(filename, mode=mode)
+
 @st.cache
 def read_pars():
-    with open('data/par.json') as f:
+    with open_file('data/par.json') as f:
         d = json.load(f)
     return pd.DataFrame(d['REFERENTIELS']['Referentiel']['Parametre'])
 
 
 @st.cache
 def read_info():
-    return pd.read_csv('data/info_AtlaSante.csv')
+    with open_file('data/info_AtlaSante.csv') as f:
+        return pd.read_csv(f)
 
 
 def get_info_region(region):
@@ -30,7 +51,8 @@ def get_info_region(region):
 
 @st.cache
 def read_carte_region(region):
-    return gpd.read_file(get_info_region(region)['Fichier'].values[0])
+    with open_file(get_info_region(region)['Fichier'].values[0]) as f:
+        return gpd.read_file(f)
    
 
 def get_code_reseau(df, point, field='c_ins_code'):
@@ -97,18 +119,17 @@ if selection:
             if not len(carte_UDIs):
                 st.caption('Contour des UDIs non disponible')
             if len(carte_UDIs) or point:
+                if point:
+                    location = [point.y, point.x]
+                else:
+                    location = [carte_UDIs.geometry.centroid.y.mean(), carte_UDIs.geometry.centroid.x.mean()]
+
                 mapa = folium.Map(
                     min_zoom=2,
                     max_zoom=18,
                     location=location,
                     zoom_start=8,
                 )
-            
-                if point:
-                    location = [point.y, point.x]
-                elif len(carte_UDIs):
-                    location = [carte_UDIs.geometry.centroid.y.mean(), carte_UDIs.geometry.centroid.x.mean()]
-                
                 if len(carte_UDIs):
                     tooltip = folium.GeoJsonTooltip(['nom_reseau'])
                     gjson = folium.GeoJson(carte_UDIs, name=f'UDIs', tooltip=tooltip)
