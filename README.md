@@ -4,7 +4,7 @@
 
 Le Green Data for Health (GD4H) est un projet inscrit dans le 4ème Plan National Santé Environnement qui a pour objectif de faciliter la mobilisation et la valorisation, par les chercheurs et les experts, des données environnementales au service de la santé-environnement.
 
-## Géo-localisation des unités de distribution
+## Géo-localisation des unités de distribution et résultat des prélevements
 
 Un des cas d'usage identifiés est l'étude des impacts de la qualité de l'eau potable. Ces données sont collectées dans la base SISE-Eaux des Agences Régionales de Santé (ARS) et mises à disposition sur le site [data.gouv.fr](https://www.data.gouv.fr/fr/datasets/resultats-du-controle-sanitaire-de-leau-distribuee-commune-par-commune/).
 
