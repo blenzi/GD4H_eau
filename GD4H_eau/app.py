@@ -103,7 +103,10 @@ if adresse_ou_commune == 'adresse':
 else:    
     communes = st.sidebar.multiselect('Communes', df_communes['nom'].sort_values().to_list())
     code_communes = df_communes.loc[df_communes['nom'].isin(communes), 'code'].to_list()
-    code_communes = ",".join(f'{i:05}' for i in code_communes)  # need to prefix zeros
+    try:
+        code_communes = ",".join(f'{i:05}' for i in code_communes)  # need to prefix zeros
+    except ValueError:  # pour la Corse les codes sont du type 2A001, pas besoin de rajouter des zeros
+        code_communes = ",".join(code_communes)
     if code_communes:
         selection = f'code_commune={code_communes}'
 
