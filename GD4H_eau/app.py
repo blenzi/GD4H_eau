@@ -113,6 +113,12 @@ if selection:
     if result.status_code in (200, 206):
         df_reseau = pd.DataFrame(result.json()['data'])
         st.write(df_reseau)
+        st.download_button(
+                label="Download as CSV",
+                data=df_reseau.to_csv(index=False),
+                file_name='reseau.csv',
+                mime='text/csv',
+            )
         if len(df_reseau) and st.checkbox('Afficher la carte des UDIs'):
             carte_region = read_carte_region(region)
             carte_UDIs = carte_region.merge(df_reseau, left_on=field, right_on='code_reseau')
