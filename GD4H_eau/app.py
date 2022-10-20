@@ -32,6 +32,7 @@ def open_file(filename, mode='r'):
     else:
         return open(filename, mode=mode)
 
+
 @st.cache
 def read_pars():
     with open_file('data/par.json') as f:
@@ -53,12 +54,12 @@ def get_info_region(region):
 def read_carte_region(region):
     with open_file(get_info_region(region)['Fichier'].values[0]) as f:
         return gpd.read_file(f)
-   
+
 
 def get_code_reseau(df, point, field='c_ins_code'):
     return df.loc[df.contains(point), field].values[0]
-    
-    
+
+
 st.write("# Reseau et résultat des prélèvements par adresse ou commune")
 
 regions = read_info()['Région'].to_list()
@@ -75,7 +76,7 @@ else:
     df_communes = pd.read_json(f'https://geo.api.gouv.fr/communes?codeDepartement=97{code_region}')
 if not len(df_communes):
     adresse_ou_commune = 'adresse'
-else:    
+else:
     adresse_ou_commune = st.sidebar.radio('Rechercher par:', ['adresse', 'commune(s)'])
 
 point = None
@@ -84,7 +85,7 @@ selection = None
 if adresse_ou_commune == 'adresse':
     adresse = st.sidebar.text_input('Adresse')
     if adresse:
-        result = requests.get(f'https://api.geoapify.com/v1/geocode/search?name="{adresse}"&apiKey={geoapi_key}&country=France&state={region}', proxies=proxies)
+        result = requests.get(f'https://api.geoapify.com/v1/geocode/search?name="{adresse}"&apiKey={geoapi_key}&country=France&state={region}', proxies=proxies)  # noqa: E501
         if result.status_code != 200:
             st.sidebar.write('Adresse non-trouvée')
             adresse = None
@@ -100,7 +101,7 @@ if adresse_ou_commune == 'adresse':
             except IndexError:
                 pass
 
-else:    
+else:
     communes = st.sidebar.multiselect('Communes', df_communes['nom'].sort_values().to_list())
     code_communes = df_communes.loc[df_communes['nom'].isin(communes), 'code'].to_list()
     code_communes = ",".join(f'{i:05}' for i in code_communes)  # need to prefix zeros
@@ -108,7 +109,7 @@ else:
         selection = f'code_commune={code_communes}'
 
 if selection:
-    result = requests.get(f'https://hubeau.eaufrance.fr/api/vbeta/qualite_eau_potable/communes_udi?{selection}&annee={annee}')
+    result = requests.get(f'https://hubeau.eaufrance.fr/api/vbeta/qualite_eau_potable/communes_udi?{selection}&annee={annee}')  # noqa: E501
     st.write('Unités de distributions (UDIs):')
     if result.status_code in (200, 206):
         df_reseau = pd.DataFrame(result.json()['data'])
@@ -138,7 +139,7 @@ if selection:
                 )
                 if len(carte_UDIs):
                     tooltip = folium.GeoJsonTooltip(['nom_reseau'])
-                    gjson = folium.GeoJson(carte_UDIs, name=f'UDIs', tooltip=tooltip)
+                    gjson = folium.GeoJson(carte_UDIs, name='UDIs', tooltip=tooltip)
                     gjson.add_to(mapa)
 
                 if point:
@@ -147,12 +148,12 @@ if selection:
                 folium.LayerControl().add_to(mapa)
                 folium_static(mapa)
 
-        
-
+# Parameters section
 parametres = st.sidebar.multiselect('Paramètres', read_pars()['NomParametre'].to_list())
 
 if selection and parametres:
-    code_parametres = ",".join(read_pars().loc[read_pars()['NomParametre'].isin(parametres), 'CdParametre'].astype(str).to_list())
+    code_parametres = ",".join(read_pars().loc[read_pars()['NomParametre'].isin(parametres), 'CdParametre']
+                                          .astype(str).to_list())
     date_min = f'{annee}-01-01 00:00:00'
     date_max = f'{annee+1}-01-01 00:00:00'
     fields = ['date_prelevement', 'libelle_parametre', 'code_reseau', 'resultat_numerique', 'libelle_unite']
