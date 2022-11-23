@@ -60,6 +60,7 @@ def get_code_reseau(df, point, field='c_ins_code'):
     return df.loc[df.contains(point), field].values[0]
 
 
+st.set_page_config("GD4H - eau")
 st.write("# Reseau et résultat des prélèvements par adresse ou commune")
 
 regions = read_info()['Région'].to_list()
