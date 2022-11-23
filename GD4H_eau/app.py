@@ -115,7 +115,7 @@ if selection:
     result = requests.get(f'https://hubeau.eaufrance.fr/api/v1/qualite_eau_potable/communes_udi?{selection}&annee={annee}')  # noqa: E501
     st.write('Unités de distributions (UDIs):')
     if result.status_code in (200, 206):
-        df_reseau = pd.DataFrame(result.json()['data'])
+        df_reseau = pd.DataFrame(result.json()['data']).astype({'code_commune': int}).merge(df_communes, left_on='code_commune', right_on='code')
         st.write(df_reseau)
         st.download_button(
                 label="Download as CSV",
