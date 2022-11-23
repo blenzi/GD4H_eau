@@ -112,7 +112,7 @@ else:
         selection = f'code_commune={code_communes}'
 
 if selection:
-    result = requests.get(f'https://hubeau.eaufrance.fr/api/vbeta/qualite_eau_potable/communes_udi?{selection}&annee={annee}')  # noqa: E501
+    result = requests.get(f'https://hubeau.eaufrance.fr/api/v1/qualite_eau_potable/communes_udi?{selection}&annee={annee}')  # noqa: E501
     st.write('Unités de distributions (UDIs):')
     if result.status_code in (200, 206):
         df_reseau = pd.DataFrame(result.json()['data'])
@@ -160,7 +160,7 @@ if selection and parametres:
     date_min = f'{annee}-01-01 00:00:00'
     date_max = f'{annee+1}-01-01 00:00:00'
     fields = ['date_prelevement', 'libelle_parametre', 'code_reseau', 'resultat_numerique', 'libelle_unite']
-    result = requests.get(f'https://hubeau.eaufrance.fr/api/vbeta/qualite_eau_potable/resultats_dis?{selection}&code_parametre={code_parametres}&date_min_prelevement={date_min}&date_max_prelevement={date_max}&fields={",".join(fields)}')  # noqa: E501
+    result = requests.get(f'https://hubeau.eaufrance.fr/api/v1/qualite_eau_potable/resultats_dis?{selection}&code_parametre={code_parametres}&date_min_prelevement={date_min}&date_max_prelevement={date_max}&fields={",".join(fields)}')  # noqa: E501
     if result.status_code in (200, 206):
         st.write('Prelevements:')
         data = pd.DataFrame(result.json()['data'])
